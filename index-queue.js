@@ -3,7 +3,6 @@ import usbDetect from "usb-detection"
 import fs from "fs"
 
 function optionPrompt(dir) {
-  inProcess = true
   inquirer
     .prompt([
       {
@@ -217,6 +216,7 @@ function eject() {
 }
 
 function checkDirectory(dir = "") {
+  inProcess = true
   let isNewUser = false
   if (dir) {
     try {
@@ -296,9 +296,8 @@ usbDetect.on("add", function (device) {
 usbDetect.on("remove", function (device) {
   let index = QFlashDrive.seek(device)
   QFlashDrive.dequeue(index)
-  console.log("Is empty :", QFlashDrive.isEmpty())
 
-  if (index == 0 && QFlashDrive.isEmpty() && inProcess) {
+  if (index == 0 && inProcess) {
     inProcess = false
 
     // Design: prompt user kapag nag-eject sila habang nasa process palang
@@ -306,8 +305,10 @@ usbDetect.on("remove", function (device) {
     console.log("Oops, unexpected event happened...")
   }
 
-  currentDirectory = !QFlashDrive.isEmpty()
-    ? `./database/${QFlashDrive.elements[0].vendorId}-${QFlashDrive.elements[0].productId}.txt`
-    : null
-  checkDirectory(currentDirectory)
+  if (!inProcess) {
+    currentDirectory = !QFlashDrive.isEmpty()
+      ? `./database/${QFlashDrive.elements[0].vendorId}-${QFlashDrive.elements[0].productId}.txt`
+      : null
+    checkDirectory(currentDirectory)
+  }
 })
