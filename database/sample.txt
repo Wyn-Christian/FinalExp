@@ -1,0 +1,9 @@
+(This is just a prototype for database)
+
+NOTE: The file name represents 2 numbers:
+      (vendorId)-(productId).txt
+    example:
+      4641-12852.txt
+
+Content:
+(Amount of money) (4-PIN password)
