@@ -6,12 +6,23 @@ This program clarified the problem of using a flash drive that serves as the ATM
 Here are the members from section **BSIT-2AB**:
 1. **Rebanal**, Wyn Christian
 2. **Concepcion**, Angela 
-3. **Moises**, Eisen Lois (*Leader*)
-4. **Cadeliña**, Emmanuel
+3. **Moises**, Eisen Lois
+4. **Cadeliña**, Emmanuel (*Leader*)
 
 ## Requirements
 Download [Node.js](https://nodejs.org/en/download/) and [NPM](https://www.npmjs.com/)
 > Tutorial: https://phoenixnap.com/kb/install-node-js-npm-on-windows
 
 ## Installation
-      npm install usb-detection
+- Download the Source code in zip file in the `code` menu
+- Extract it
+- In the console, change the directory through where the file has been extracted
+- use the command in the bottom:
+```
+  npm install usb-detection
+```
+
+- then use the commmand
+```
+node index-queue.js
+```
