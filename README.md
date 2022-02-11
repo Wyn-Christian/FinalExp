@@ -23,6 +23,6 @@ Download [Node.js](https://nodejs.org/en/download/) and [NPM](https://www.npmjs.
 ```
 
 - then use the commmand
-```
+``` 
 node index-queue.js
 ```

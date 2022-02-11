@@ -2,18 +2,59 @@ import inquirer from "inquirer"
 import usbDetect from "usb-detection"
 import fs from "fs"
 
+// Designs
+function displayStartUp() {
+  console.clear()
+
+  console.log(
+    "                               ...Please plug/replug the flashdrive/s..."
+  )
+}
+function displayEject() {
+  console.log(
+    "                   ****************** Please unplug the flash drive *******************"
+  )
+  console.log(
+    "                   **************** Thank you for using ATM Flash drive! **************"
+  )
+}
+function displayNewDevice() {
+  console.clear()
+  console.log(
+    "                   *************** Detected new device! ***************"
+  )
+  console.log("                                   Please Sign-Up First")
+}
+function displayUnexpectedError() {
+  console.clear()
+  console.log(
+    "                               ...Oops, unexpected event happened..."
+  )
+}
+
+function displayReceipt(amount, currentMoney) {
+  console.log("\t\t Here is the receipt, thank you!")
+  console.log(`\t\t Amount taken: ${amount}`)
+  console.log(`\t\t Current Amount in ATM flashdrive: ${currentMoney}`)
+
+  let d = new Date()
+  console.log(`\t\t Date occured: ${d.toUTCString()}`)
+}
+
 function optionPrompt(dir) {
   inquirer
     .prompt([
       {
         type: "rawlist",
         name: "option",
-        message: "Welcome to ATM flashdrive: ",
+        message:
+          "                   *************** WELCOME TO ATM FLASHDRIVE! *************** \nOption: ",
         choices: [
+          new inquirer.Separator(),
           "Withdraw",
           "Check balance",
-          new inquirer.Separator(),
           "Eject",
+          new inquirer.Separator(),
         ],
       },
     ])
@@ -64,7 +105,10 @@ function signUpPrompt(dir) {
     .then((answers) => {
       password = answers["sign-up"]
       currentMoney = answers["current money"]
-      console.log(`Sign Up completed, Welcome!`)
+      console.log(
+        `                                  SIGN UP COMPLETED! \n\t\t\t\t       WELCOME!`
+      )
+      console.clear()
 
       fs.writeFile(
         dir,
@@ -109,7 +153,7 @@ function withdrawPrompt(dir) {
       {
         type: "password",
         name: "verify",
-        message: "Enter the 4-PIN for verification: ",
+        message: "Enter 4-PIN verification: ",
         mask: "*",
         when(answer) {
           return answer.confirmation
@@ -123,11 +167,9 @@ function withdrawPrompt(dir) {
     .then((ans) => {
       if (ans.confirmation) {
         data[0] = Number(data[0]) - ans["amount"]
-        console.log("Here is the receipt, thank you!")
-        console.log(`Amount taken: ${ans.amount}`)
-        console.log(`Current Amount in ATM flashdrive: ${data[0]}`)
-        let d = new Date()
-        console.log(`Data occure1d: ${d.toUTCString()}`)
+
+        // Design: Resibo ng user
+        displayReceipt(ans.amount, data[0])
 
         fs.writeFileSync(
           dir,
@@ -170,7 +212,7 @@ function checkBalPrompt(dir) {
       {
         type: "confirm",
         name: "confirmation",
-        message: "Are you sure you want to checky your balance?",
+        message: "Are you sure you want to check your balance?",
       },
       {
         type: "password",
@@ -211,8 +253,7 @@ function eject() {
   inProcess = false
 
   // Design: kapag tapos na ang user mag-process sa atm
-  console.log("Please unplug the current flashdrive...")
-  console.log("Thank you for your patience...")
+  displayEject()
 }
 
 function checkDirectory(dir = "") {
@@ -225,7 +266,7 @@ function checkDirectory(dir = "") {
       isNewUser = true
 
       // Design: notification para sa mga bagong users
-      console.log("Detected new device! Good day, please sign-up first!")
+      displayNewDevice()
     }
 
     if (isNewUser) {
@@ -235,7 +276,7 @@ function checkDirectory(dir = "") {
     }
   } else {
     // Design: gawa kayo ng prompt for start-up (1)
-    console.log("Please plug/replug the flashdrive/s...")
+    displayStartUp()
   }
 }
 
@@ -283,7 +324,7 @@ let currentDirectory,
 usbDetect.startMonitoring()
 
 // Design: gawa kayo ng prompt for start-up (1)
-console.log("Please plug/replug the flashdrive/s...")
+displayStartUp()
 
 usbDetect.on("add", function (device) {
   if (QFlashDrive.isEmpty()) {
@@ -301,8 +342,7 @@ usbDetect.on("remove", function (device) {
     inProcess = false
 
     // Design: prompt user kapag nag-eject sila habang nasa process palang
-    console.clear()
-    console.log("Oops, unexpected event happened...")
+    displayUnexpectedError()
   }
 
   if (!inProcess) {
